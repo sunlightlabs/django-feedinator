@@ -1,0 +1,11 @@
+{% if entries %}
+<ul class="hfeed">
+    {% for entry in entries %}
+    <li class="hentry">
+        <a href="{{ entry.link }}" class="entry-title" rel="bookmark">{{ entry.title|safe }}</a>
+        <abbr class="published" title="{{ entry.date_published.isoformat }}"> {{ entry.date_published|date:"F j, Y" }}</abbr>
+        <span class="vcard author"><span class="fn">{{ entry.author_name }}</span></span>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

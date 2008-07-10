@@ -1,0 +1,58 @@
+from django.db import models
+import datetime
+
+FEED_TYPE_CHOICES = (
+    (u'rss', u'RSS'),
+    (u'rss-0.90',  u'RSS 0.90'),
+    (u'rss-0.91', u'RSS 0.91'),
+    (u'rss-1.0', u'RSS 1.0'),
+    (u'rss-2.0', u'RSS 2.0 by Dave Winer'),
+    (u'rss-2.0.10', u'RSS 2.0 by RSS Advisory Board'),
+    (u'atom', u'Atom'),
+    (u'atom-0.3', u'Atom 0.3'),
+    (u'atom-1.0', u'Atom 1.0'),
+)
+
+class Feed(models.Model):
+    url = models.URLField(verify_exists=False)
+    codename = models.CharField(max_length=128, blank=True)
+    type = models.CharField(max_length=16, choices=FEED_TYPE_CHOICES, blank=True, null=True)
+    title = models.CharField(max_length=225)
+    link = models.URLField(verify_exists=False)
+    description = models.TextField(blank=True)
+    ttl = models.IntegerField(default=60)
+    date_added = models.DateTimeField()
+    last_fetched = models.DateTimeField(blank=True, null=True)
+    next_fetch = models.DateTimeField()
+    class Admin:
+        pass
+    def save(self):
+        if not self.last_fetched:
+            self.last_fetched = datetime.datetime.now()
+            self.next_fetch = self.last_fetched
+        else:
+            self.next_fetch = self.last_fetched + datetime.timedelta(0, 0, 0, 0, self.ttl)
+        super(Feed, self).save()
+    def __unicode__(self):
+        return self.title
+    
+class FeedEntry(models.Model):
+    uid = models.CharField(max_length=255)
+    feed = models.ForeignKey(Feed, related_name="entries")
+    title = models.CharField(max_length=255)
+    link = models.URLField(verify_exists=False, blank=True)
+    summary = models.TextField(blank=True)
+    content = models.TextField(blank=True)
+    author_name = models.CharField(max_length=255, blank=True)
+    author_email = models.EmailField(blank=True, null=True)
+    author_uri = models.URLField(verify_exists=False, blank=True, null=True)
+    date_published = models.DateTimeField(blank=True, null=True)
+    date_updated = models.DateTimeField(blank=True, null=True)
+    last_fetched = models.DateTimeField()
+    class Admin:
+        pass
+    class Meta:
+        ordering = ['-date_published']
+        
+    def __unicode__(self):
+        return u"%s: %s" % (self.feed.title, self.title)

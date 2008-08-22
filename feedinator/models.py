@@ -24,8 +24,6 @@ class Feed(models.Model):
     date_added = models.DateTimeField()
     last_fetched = models.DateTimeField(blank=True, null=True)
     next_fetch = models.DateTimeField()
-    class Admin:
-        pass
     def save(self):
         if not self.last_fetched:
             self.last_fetched = datetime.datetime.now()
@@ -49,8 +47,6 @@ class FeedEntry(models.Model):
     date_published = models.DateTimeField(blank=True, null=True)
     date_updated = models.DateTimeField(blank=True, null=True)
     last_fetched = models.DateTimeField()
-    class Admin:
-        pass
     class Meta:
         ordering = ['-date_published']
         

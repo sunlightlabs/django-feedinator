@@ -1,5 +1,6 @@
+from django.conf import settings
 from datetime import datetime
-from feedinator.models import Feed, FeedEntry
+from feedinator.models import Feed, FeedEntry, Tag
 from sunlightcore.tz import Eastern, utc
 import feedparser
 import time
@@ -71,7 +72,8 @@ def update_feed(feed_id):
     feed = Feed.objects.get(pk=feed_id)
     #FeedEntry.objects.filter(feed=feed).delete()
     
-    print "--- updating %s" % feed.title
+    if settings.DEBUG:
+        print "--- updating %s" % feed.title
     
     f = feedparser.parse(feed.url)
     
@@ -91,27 +93,32 @@ def update_feed(feed_id):
             )
             
             fe.summary = entry.get("summary", "")
-            if entry.has_key("content"):
+            if "content" in entry:
                 for content in entry.content:
                     fe.content = content.get("value", "")
             else:
                 fe.content = entry.get("summary", "")
             
-            if entry.has_key("published_parsed"):
+            if "published_parsed" in entry:
                 fe.date_published = tuple_to_datetime(entry.published_parsed, tz)
             else:
                 fe.date_published = tuple_to_datetime(entry.updated_parsed, tz)
                 
-            if entry.has_key("author_detail"):
+            if "author_detail" in entry:
                 fe.author_name = entry.author_detail.get("name", "")
                 fe.author_email = entry.author_detail.get("email", None)
                 fe.author_uri = entry.author_detail.get("href", None)
-            elif entry.has_key("author"):
+            elif "author" in entry:
                 fe.author_name = entry.author
             
             fe.save()
             
-            print fe
+            if "tags" in entry:
+                for name in entry.tags:
+                    Tag(name=name.term, feed_entry=fe).save()
+            
+            if settings.DEBUG:
+                print fe
             
         else:
             
@@ -132,7 +139,13 @@ def update_feed(feed_id):
                 
                 fe.save()
                 
-                print "UPDATED %s" % fe
+                if "tags" in entry:
+                    fe.tags.all().delete()
+                    for name in entry.tags:
+                        Tag(name=name.term, feed_entry=fe).save()
+                
+                if settings.DEBUG:
+                    print "UPDATED %s" % fe
                 
     feed.last_fetched = datetime.now()
     feed.save()

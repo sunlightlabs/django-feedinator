@@ -24,6 +24,10 @@ class Feed(models.Model):
     date_added = models.DateTimeField()
     last_fetched = models.DateTimeField(blank=True, null=True)
     next_fetch = models.DateTimeField()
+    
+    def __unicode__(self):
+        return self.title
+
     def save(self):
         if not self.last_fetched:
             self.last_fetched = datetime.datetime.now()
@@ -31,10 +35,12 @@ class Feed(models.Model):
         else:
             self.next_fetch = self.last_fetched + datetime.timedelta(0, 0, 0, 0, self.ttl)
         super(Feed, self).save()
-    def __unicode__(self):
-        return self.title
+        
+class FeedEntryManager(models.Manager):
+    pass
     
 class FeedEntry(models.Model):
+    objects = FeedEntryManager()
     uid = models.CharField(max_length=255)
     feed = models.ForeignKey(Feed, related_name="entries")
     title = models.CharField(max_length=255)
@@ -47,8 +53,19 @@ class FeedEntry(models.Model):
     date_published = models.DateTimeField(blank=True, null=True)
     date_updated = models.DateTimeField(blank=True, null=True)
     last_fetched = models.DateTimeField()
+    
     class Meta:
         ordering = ['-date_published']
         
     def __unicode__(self):
         return u"%s: %s" % (self.feed.title, self.title)
+        
+class Tag(models.Model):
+    name = models.CharField(max_length=128)
+    feed_entry = models.ForeignKey(FeedEntry, related_name="tags")
+    
+    class Meta:
+        ordering = ['name']
+    
+    def __unicode__(self):
+        return self.name

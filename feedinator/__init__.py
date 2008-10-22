@@ -79,6 +79,11 @@ def update_feed(feed_id):
     
     for entry in f.entries:
         
+        if not "id" in entry:
+            if settings.DEBUG:
+                print "!!!", entry.title, "has no id"
+            continue
+        
         entry_exists = feed.entries.filter(uid=entry.id).count()
         
         if not entry_exists:

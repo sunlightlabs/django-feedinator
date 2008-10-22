@@ -37,8 +37,8 @@ def add_feed(url, codename):
         feed = Feed(
             url = url,
             codename = codename,
-            title = f.feed.title,
-            link = f.feed.link,
+            title = f.feed.get("title", codename),
+            link = f.feed.get("link", url),
             description = f.feed.get("subtitle", ""),
             ttl = f.feed.get("ttl", 60),
             date_added = datetime.now()

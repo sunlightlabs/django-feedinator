@@ -6,6 +6,8 @@ class TagInline(admin.StackedInline):
 
 class FeedEntryAdmin(admin.ModelAdmin):
     inlines = [TagInline]
+    search_fields = ['title']
+    list_filter = ['feed']
     
 admin.site.register(Feed)
 admin.site.register(FeedEntry, FeedEntryAdmin)

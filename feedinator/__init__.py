@@ -1,7 +1,7 @@
 from django.conf import settings
 from datetime import datetime
 from feedinator.models import Feed, FeedEntry, Tag
-from sunlightcore.tz import Eastern, utc
+from tz import Eastern, utc
 import feedparser
 import time
 

@@ -1,0 +1,5 @@
+include LICENSE
+include README.rst
+include templates
+recursive-include feedinator *.py
+recursive-include feedinator/templates *

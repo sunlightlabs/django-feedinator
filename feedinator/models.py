@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 import datetime
 
 FEED_TYPE_CHOICES = (
@@ -18,10 +20,10 @@ class Feed(models.Model):
     codename = models.CharField(max_length=128, blank=True)
     type = models.CharField(max_length=16, choices=FEED_TYPE_CHOICES, blank=True, null=True)
     title = models.CharField(max_length=225)
-    link = models.URLField(verify_exists=False)
+    link = models.URLField(verify_exists=False, blank=True)
     description = models.TextField(blank=True)
     ttl = models.IntegerField(default=60)
-    date_added = models.DateTimeField()
+    date_added = models.DateTimeField(auto_now_add=True)
     last_fetched = models.DateTimeField(blank=True, null=True)
     next_fetch = models.DateTimeField()
     
@@ -36,6 +38,15 @@ class Feed(models.Model):
             self.next_fetch = self.last_fetched + datetime.timedelta(0, 0, 0, 0, self.ttl)
         super(Feed, self).save()
         
+class Subscription(models.Model):
+    feed = models.ForeignKey(Feed, related_name='subscriptions')
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    subscriber = generic.GenericForeignKey()
+
+    def __unicode__(self):
+        return '%s to %s' % (self.subscriber, self.feed)
+
 class FeedEntryManager(models.Manager):
     pass
     

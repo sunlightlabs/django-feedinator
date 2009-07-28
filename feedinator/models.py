@@ -30,13 +30,13 @@ class Feed(models.Model):
     def __unicode__(self):
         return self.title
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.last_fetched:
             self.last_fetched = datetime.datetime.now()
             self.next_fetch = self.last_fetched
         else:
             self.next_fetch = self.last_fetched + datetime.timedelta(0, 0, 0, 0, self.ttl)
-        super(Feed, self).save()
+        super(Feed, self).save(*args, **kwargs)
         
 class Subscription(models.Model):
     feed = models.ForeignKey(Feed, related_name='subscriptions')

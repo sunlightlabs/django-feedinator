@@ -1,0 +1,8 @@
+0.2.0 - July 28 2009
+====================
+    - add Subscription
+    - fix save method for Django 1.1
+
+0.1.0 - June 8 2009
+===================
+    - initial public release

@@ -61,9 +61,9 @@ def update_feeds(all_feeds=False):
     for feed_id in feed_ids:
         try:
             update_feed(feed_id)
-        except:
+        except Exception, e:
             import sys
-            sys.stderr.write('error updating feed (id=%s)\n' % feed_id)
+            sys.stderr.write('error updating feed (id=%s): %s\n' % (feed_id, e))
         
 def update_feed(feed_id):
     

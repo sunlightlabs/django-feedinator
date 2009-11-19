@@ -59,7 +59,11 @@ def update_feeds(all_feeds=False):
         feed_ids = feed_ids.filter(next_fetch__lte=datetime.now())
     
     for feed_id in feed_ids:
-        update_feed(feed_id)
+        try:
+            update_feed(feed_id)
+        except:
+            import sys
+            sys.stderr.write('error updating feed (id=%s)\n' % feed_id)
         
 def update_feed(feed_id):
     

@@ -5,6 +5,6 @@ from feedinator.models import FeedEntry
 register = template.Library()
 
 @register.simple_tag
-def headlines(codename, count):
-    entries = FeedEntry.objects.filter(feed__codename=codename).order_by("-date_published")[:int(count)]
+def headlines(codenames, count):
+    entries = FeedEntry.objects.filter(feed__codename__in=codenames.split(',')).order_by("-date_published")[:int(count)]
     return render_to_string("feedinator/headlines.html", {"entries": entries})

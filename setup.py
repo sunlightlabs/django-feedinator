@@ -4,7 +4,7 @@ long_description = ''#open('README.rst').read()
 
 setup(
     name='django-feedinator',
-    version="0.2.0",
+    version="0.2.1",
     package_dir={'feedinator': 'feedinator'},
     packages=['feedinator', 'feedinator.templatetags'],
     package_data={'feedinator': ['templates/feedinator/*.html']},

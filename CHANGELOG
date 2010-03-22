@@ -1,6 +1,7 @@
 0.2.1 - March 22 2010
 =====================
     - fix update_feeds to not fail if a single feed fails
+    - add optional offset to headlines templatetag
 
 0.2.0 - July 28 2009
 ====================

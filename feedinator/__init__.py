@@ -5,6 +5,8 @@ from tz import Eastern, utc
 import feedparser
 import time
 
+feedparser.SANITIZE_HTML = 0
+
 def tuple_to_datetime(t, tz=None):
     """
     Convert a time tuple into a datetime object in the given timezone.

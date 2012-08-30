@@ -73,7 +73,6 @@ def update_feeds(all_feeds=False):
 
 
 def update_feed(feed_id, reset=False):
-
     """
     Update an individual feed regardless of freshness.
     """

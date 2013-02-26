@@ -21,11 +21,11 @@ TIMEZONE_CHOICES = [(tz, tz) for tz in common_timezones]
 
 
 class Feed(models.Model):
-    url = models.URLField(verify_exists=False)
+    url = models.URLField()
     codename = models.CharField(max_length=128, blank=True)
     type = models.CharField(max_length=16, choices=FEED_TYPE_CHOICES, blank=True, null=True)
     title = models.CharField(max_length=225)
-    link = models.URLField(verify_exists=False, blank=True)
+    link = models.URLField(blank=True)
     timezone = models.CharField(max_length=32, choices=TIMEZONE_CHOICES, default='UTC')
     description = models.TextField(blank=True)
     ttl = models.IntegerField(default=60)
@@ -64,12 +64,12 @@ class FeedEntry(models.Model):
     uid = models.CharField(max_length=255)
     feed = models.ForeignKey(Feed, related_name="entries")
     title = models.CharField(max_length=255)
-    link = models.URLField(verify_exists=False, blank=True)
+    link = models.URLField(blank=True)
     summary = models.TextField(blank=True)
     content = models.TextField(blank=True)
     author_name = models.CharField(max_length=255, blank=True)
     author_email = models.EmailField(blank=True, null=True)
-    author_uri = models.URLField(verify_exists=False, blank=True, null=True)
+    author_uri = models.URLField(blank=True, null=True)
     date_published = models.DateTimeField(blank=True, null=True)
     date_updated = models.DateTimeField(blank=True, null=True)
     last_fetched = models.DateTimeField()
